@@ -1,0 +1,34 @@
+Configurar el cliente NFS
+
+Ya que estemos en el cliente desde donde queremos accesar a nuestro servidor NFS tenemos que instalar también las utilidades de NFS
+
+[root@client ~]# yum install nfs-utils
+
+Y activar los servicios
+
+[root@client ~]# systemctl enable rpcbind
+[root@client ~]# systemctl start rpcbind
+
+Hay que crear un directorio que es el que vamos a montar en nuestro servidor
+
+[root@client ~]# mkdir /mnt/data
+
+Ya con esto, podemos montar nuestro directorio
+
+[root@client ~]# mount -t nfs -o rw <ip or host nfs server>:/data /mnt/data
+
+Vamos a ver si realmente se montó
+
+[root@client ~]# df -h
+<ip or host>:/data                   500G  1.7G  499G   1% /mnt/data
+
+Si aparece el punto de montaje, ¡felicidades!, ya tienes un servidor NFS listo.
+
+Para no montar el NFS cada vez que reiniciemos la máquina, podemos modificar fstab para que se automonte
+
+[root@client ~]# vi /etc/fstab
+<ip or host server>:/data/  /mnt/data nfs rw,sync,hard,intr 0 0
+
+Ya con esto tenemos configurado tanto cliente como servidor, como te darás cuenta aún falta configurar permisos o también generar carpetas para grupos de usuarios, pero este tutorial te servirá para iniciar tu servidor NFS.
+
+En un siguiente tutorial, vamos a utilizar kerberos para agregarle seguridad a nuestra instalación y que esté mejor protegido nuestros archivos.
